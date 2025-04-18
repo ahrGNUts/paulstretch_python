@@ -1,3 +1,5 @@
-numpy>=1.16.0
-scipy>=1.2.0
-matplotlib>=3.0.0  # Optional: only needed for paulstretch_newmethod.py with plot_onsets=True 
+kivy>=2.0.0
+numpy>=1.19.0
+scipy>=1.5.0
+# Optional: only needed for paulstretch_newmethod.py with plot_onsets=True
+matplotlib>=3.0.0 

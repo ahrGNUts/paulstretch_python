@@ -1,0 +1,64 @@
+#:kivy 2.0.0
+
+<ToolTip@Popup>:
+    size_hint: None, None
+    size: self.content.texture_size[0] + 20, self.content.texture_size[1] + 20
+    auto_dismiss: True
+    title: ''
+    title_size: 0
+    separator_height: 0
+    background_color: 0.2, 0.2, 0.2, 0.9
+    border: [5, 5, 5, 5]
+    
+    Label:
+        id: content
+        text: root.text
+        color: 1, 1, 1, 1
+        size_hint: None, None
+        size: self.texture_size
+        padding: 10, 10
+
+<FileSelectorWidget>:
+    orientation: 'horizontal'
+    padding: 5, 0
+
+<ParameterSlider>:
+    orientation: 'horizontal'
+    padding: 5, 0
+    spacing: 5
+    
+    canvas.before:
+        Color:
+            rgba: 0.9, 0.9, 0.9, 0.2
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<LogArea>:
+    canvas.before:
+        Color:
+            rgba: 0.1, 0.1, 0.1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        id: log_label
+        text: root.log_text
+        color: 0.8, 0.8, 0.8, 1
+        size_hint_y: None
+        height: self.texture_size[1]
+        text_size: self.width, None
+        padding: 10, 10
+        halign: 'left'
+        valign: 'top'
+
+<PaulstretchGUI>:
+    canvas.before:
+        Color:
+            rgba: 0.15, 0.15, 0.2, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: 'vertical'
+    padding: 10
+    spacing: 10 
