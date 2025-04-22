@@ -51,6 +51,7 @@ class PaulstretchFrame(wx.Frame):
         
         # Set up the panel sizer
         self.panel.SetSizer(main_sizer)
+        self.panel.Layout()
         
         # Bind the close event
         self.Bind(wx.EVT_CLOSE, self.on_close)
