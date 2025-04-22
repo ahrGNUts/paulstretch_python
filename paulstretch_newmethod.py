@@ -168,7 +168,7 @@ def paulstretch(samplerate,smp,stretch,windowsize_seconds,onset_level,outfilenam
         output[output<-1.0]=-1.0
 
         #write the output to wav file
-        outfile.writeframes(int16(output.ravel(1)*32767.0).tostring())
+        outfile.writeframes(int16(output.ravel('F')*32767.0).tobytes())
 
         if get_next_buf:
             start_pos+=displace_pos
@@ -203,26 +203,35 @@ def paulstretch(samplerate,smp,stretch,windowsize_seconds,onset_level,outfilenam
     
 
 ########################################
-print ("Paul's Extreme Sound Stretch (Paulstretch) - Python version 20141220")
-print ("new method: using onsets information")
-print ("by Nasca Octavian PAUL, Targu Mures, Romania\n")
-parser = OptionParser(usage="usage: %prog [options] input_wav output_wav")
-parser.add_option("-s", "--stretch", dest="stretch",help="stretch amount (1.0 = no stretch)",type="float",default=8.0)
-parser.add_option("-w", "--window_size", dest="window_size",help="window size (seconds)",type="float",default=0.25)
-parser.add_option("-t", "--onset", dest="onset",help="onset sensitivity (0.0=max,1.0=min)",type="float",default=10.0)
-(options, args) = parser.parse_args()
+if __name__ == "__main__":
+    print ("Paul's Extreme Sound Stretch (Paulstretch) - Python version 20141220")
+    print ("new method: using onsets information")
+    print ("by Nasca Octavian PAUL, Targu Mures, Romania\n")
+    parser = OptionParser(usage="usage: %prog [options] input_wav output_wav")
+    parser.add_option("-s", "--stretch", dest="stretch",help="stretch amount (1.0 = no stretch)",type="float",default=8.0)
+    parser.add_option("-w", "--window_size", dest="window_size",help="window size (seconds)",type="float",default=0.25)
+    parser.add_option("-t", "--onset", dest="onset",help="onset sensitivity (0.0=max,1.0=min)",type="float",default=10.0)
+    (options, args) = parser.parse_args()
 
 
-if (len(args)<2) or (options.stretch<=0.0) or (options.window_size<=0.001):
-    print ("Error in command line parameters. Run this program with --help for help.")
-    sys.exit(1)
+    if (len(args)<2) or (options.stretch<=0.0) or (options.window_size<=0.001):
+        print ("Error in command line parameters. Run this program with --help for help.")
+        sys.exit(1)
 
-print ("stretch amount = %g" % options.stretch)
-print ("window size = %g seconds" % options.window_size)
-print ("onset sensitivity = %g" % options.onset)
-(samplerate,smp)=load_wav(args[0])
-
-paulstretch(samplerate,smp,options.stretch,options.window_size,options.onset,args[1])
+    print ("stretch amount = %g" % options.stretch)
+    print ("window size = %g seconds" % options.window_size)
+    print ("onset sensitivity = %g" % options.onset)
+    
+    # Only read and process input file when directly running the script
+    input_filename = args[0]
+    output_filename = args[1]
+    
+    samplerate_and_samples = load_wav(input_filename)
+    if samplerate_and_samples is not None:
+        (samplerate, smp) = samplerate_and_samples
+        paulstretch(samplerate, smp, options.stretch, options.window_size, options.onset, output_filename)
+    else:
+        print("Error: Could not process input file")
 
 
 

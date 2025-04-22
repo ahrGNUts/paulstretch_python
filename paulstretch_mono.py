@@ -97,7 +97,7 @@ def paulstretch(samplerate,smp,stretch,windowsize_seconds,outfilename):
         output[output<-1.0]=-1.0
 
         #write the output to wav file
-        outfile.writeframes(int16(output*32767.0).tostring())
+        outfile.writeframes(int16(output*32767.0).tobytes())
 
         start_pos+=displace_pos
         if start_pos>=len(smp):
@@ -109,9 +109,14 @@ def paulstretch(samplerate,smp,stretch,windowsize_seconds,outfilename):
     outfile.close()
 ########################################
 
-(samplerate,smp)=load_wav("input.wav")
-
-paulstretch(samplerate,smp,8.0,0.25,"out.wav")
+if __name__ == "__main__":
+    # This code will only run when the script is executed directly
+    # It won't run when the script is imported as a module
+    (samplerate,smp)=load_wav("input.wav")
+    if samplerate is not None:  # Check if file was loaded successfully
+        paulstretch(samplerate,smp,8.0,0.25,"out.wav")
+    else:
+        print("Error: Could not process input.wav")
 
 
 
