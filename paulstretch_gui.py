@@ -16,7 +16,7 @@ from paulstretch_stdout_redirect import StdoutRedirector
 
 class PaulstretchFrame(wx.Frame):
     def __init__(self, parent=None, title="Paulstretch Audio Processor"):
-        super(PaulstretchFrame, self).__init__(parent, title=title, size=(900, 700))
+        super(PaulstretchFrame, self).__init__(parent, title=title, size=(900, 900))
         
         self.processing_thread = None
         self.is_processing = False
@@ -62,7 +62,16 @@ class PaulstretchFrame(wx.Frame):
         # Final setup
         self.Centre()
         self.Show()
+        wx.CallAfter(self.bring_to_front)
         
+    def bring_to_front(self):
+        self.Raise()
+        self.SetFocus()
+        # On macOS, this is particularly effective
+        if self.IsIconized():
+            self.Iconize(False)
+        self.RequestUserAttention()
+    
     def create_file_section(self):
         """Create the file selection section of the UI"""
         sizer = wx.StaticBoxSizer(wx.VERTICAL, self.panel, "File Selection")
