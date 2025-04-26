@@ -21,6 +21,11 @@ class PaulstretchFrame(wx.Frame):
         self.processing_thread = None
         self.is_processing = False
         
+        # Track previous slider values
+        self.prev_stretch_value = 0
+        self.prev_window_value = 0
+        self.prev_onset_value = 0
+        
         # Set up the main panel and sizer
         self.panel = wx.Panel(self)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -371,27 +376,42 @@ class PaulstretchFrame(wx.Frame):
     
     def on_stretch_changed(self, event):
         """Handle changes to the stretch amount slider"""
-        value = self.stretch_slider.GetValue() / 10.0
+        current_value = self.stretch_slider.GetValue()
+        value = current_value / 10.0
         self.stretch_text.SetLabel(f"{value:.1f}")
         
-        # Set preset to Custom
-        self.preset_combo.SetSelection(0)
+        # Set preset to Custom only if value actually changed
+        if event is not None and current_value != self.prev_stretch_value:
+            self.preset_combo.SetSelection(0)
+            
+        # Update previous value
+        self.prev_stretch_value = current_value
     
     def on_window_changed(self, event):
         """Handle changes to the window size slider"""
-        value = self.window_slider.GetValue() / 100.0
+        current_value = self.window_slider.GetValue()
+        value = current_value / 100.0
         self.window_text.SetLabel(f"{value:.2f}")
         
-        # Set preset to Custom
-        self.preset_combo.SetSelection(0)
+        # Set preset to Custom only if value actually changed
+        if event is not None and current_value != self.prev_window_value:
+            self.preset_combo.SetSelection(0)
+            
+        # Update previous value
+        self.prev_window_value = current_value
     
     def on_onset_changed(self, event):
         """Handle changes to the onset sensitivity slider"""
-        value = self.onset_slider.GetValue() / 10.0
+        current_value = self.onset_slider.GetValue()
+        value = current_value / 10.0
         self.onset_text.SetLabel(f"{value:.1f}")
         
-        # Set preset to Custom
-        self.preset_combo.SetSelection(0)
+        # Set preset to Custom only if value actually changed
+        if event is not None and current_value != self.prev_onset_value:
+            self.preset_combo.SetSelection(0)
+            
+        # Update previous value
+        self.prev_onset_value = current_value
     
     def on_preset_changed(self, event):
         """Handle changes to the preset selection"""
@@ -414,6 +434,11 @@ class PaulstretchFrame(wx.Frame):
         self.on_stretch_changed(None)
         self.on_window_changed(None)
         self.on_onset_changed(None)
+        
+        # Update previous values to match current preset values
+        self.prev_stretch_value = self.stretch_slider.GetValue()
+        self.prev_window_value = self.window_slider.GetValue()
+        self.prev_onset_value = self.onset_slider.GetValue()
     
     def update_progress(self, percentage):
         """Update the progress gauge based on stdout output"""
