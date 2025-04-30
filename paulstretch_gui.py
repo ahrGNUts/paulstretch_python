@@ -632,6 +632,22 @@ class PaulstretchFrame(wx.Frame):
     
     def on_close(self, event):
         """Handle window close event"""
+        # If processing is active, show confirmation dialog
+        if self.is_processing:
+            dlg = wx.MessageDialog(
+                self,
+                "Processing is still active. Are you sure you want to close the application?",
+                "Confirm Close",
+                wx.YES_NO | wx.ICON_QUESTION
+            )
+            result = dlg.ShowModal()
+            dlg.Destroy()
+            
+            # If user clicked No, abort closing
+            if result == wx.ID_NO:
+                event.Veto()
+                return
+        
         # Stop any ongoing processing
         self.is_processing = False
         if self.processing_thread and self.processing_thread.is_alive():
